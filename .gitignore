@@ -1,0 +1,6 @@
+.vscode
+venv
+vendor
+logviewer
+config.toml
+.DS_Store

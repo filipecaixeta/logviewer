@@ -1,0 +1,52 @@
+# config.toml
+
+# Define the Kubernetes namespaces that will be used.
+# Example namespaces:
+namespaces = [
+    "test namespace 1",
+    "test namespace 2",
+    "test namespace 4"
+]
+
+# Define the color theme. 
+# This setting specifies the overall color scheme for the UI, 
+# You can choose between "light" and "dark". by default, the theme is set to "dark".
+# Choose "light" if your terminal background is white.
+color = "dark"
+
+# Views are configurations that define how log data is displayed.
+# They can include filters, transformations, and specify which fields to display.
+[[views]]
+# Specify the name of the view.
+# This name is used to identify and select the view in the application.
+name = "even info logs"
+
+# Filters are used to select log entries based on certain criteria.
+# Write your filters using the Expr language (https://expr-lang.org/docs/language-definition).
+# Using the provided log structure, here are some example filter expressions:
+# - Filter for logs where "level" is "info" and "int_field" is even:
+#   json.level == "info" and int(json.int_field)%2 == 0
+# - Filter for logs containing the message "this is a test log":
+#   text contains "this is a test log"
+# You can use `json` to refer to the JSON fields of the log, and `text` to refer to the log as a text string.
+# but remember that not all logs have a JSON representation.
+filter = """
+filterLevel(json.level, "info") and int(json.float_field)%2==0
+"""
+
+# Set the default behavior for logs when the filter fails (e.g., due to format issues).
+# This is useful for mixed logs (JSON and text), where a non-JSON log might break the filter.
+# Setting this to true ensures logs are shown even when the filter doesn't match due to format discrepancies.
+# This is helpful when your application emits JSON logs, but also emits non-JSON in case of panic or exceptions.
+filterDefault = true
+
+# Specify which fields of the logs to display.
+# This setting determines which log fields are returned in the view.
+returnedFields = ["ts", "level"]
+
+    # Define transformations to modify or create new fields in the log view.
+    [[views.transforms]]
+    # Specify the field that will be created or modified.
+    field = "ts"
+    # Expression to transform the 'ts' field from Unix time to a human-readable date format.
+    expression = "toLocalDateStr(json.ts)"
