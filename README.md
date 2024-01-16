@@ -13,7 +13,7 @@ LogViewer is a Terminal User Interface (TUI) application designed to facilitate 
 To install LogViewer, ensure you have Go installed on your system and then run the following command:
 
 ```bash
-go install github.com/filipecaixeta/logviewer/cmd/logviewer
+go install github.com/filipecaixeta/logviewer/cmd/logviewer@latest
 ```
 
 ## Usage
