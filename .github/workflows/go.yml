@@ -24,7 +24,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Build
-      run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.arch }} go build -ldflags "-s -w" -o logviewer-${{ matrix.os }}-${{ matrix.arch }} cmd/main.go
+      run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.arch }} go build -ldflags "-s -w" -o logviewer-${{ matrix.os }}-${{ matrix.arch }} cmd/logviewer.go
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.arch }}
@@ -57,11 +57,16 @@ jobs:
         prerelease: false
 
     - name: Upload Release Assets
-      uses: actions/upload-release-asset@v1
+      run: |
+        for file in ./artifacts/logviewer-*; do
+          if [ -e "$file" ]; then
+            file_name=$(basename $file)
+            echo "Uploading $file_name"
+            gh release upload ${{ github.ref }} $file --clobber -R ${{ github.repository }}
+          else
+            echo "No files found with the prefix 'logviewer-'"
+          fi
+        done
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/logviewer-${{ matrix.os }}-${{ matrix.arch }}
-        asset_name: logviewer-${{ matrix.os }}-${{ matrix.arch }}
-        asset_content_type: application/octet-stream
+
