@@ -24,7 +24,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Build
-      run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.arch }} go build -ldflags "-s -w" -o logviewer-${{ matrix.os }}-${{ matrix.arch }} cmd/logviewer.go
+      run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.arch }} go build -ldflags "-s -w" -o logviewer-${{ matrix.os }}-${{ matrix.arch }} cmd/logviewer/main.go
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.arch }}
