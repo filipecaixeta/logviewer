@@ -3,6 +3,7 @@ package json_format
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -48,8 +49,12 @@ func formatJSONValue(value interface{}, indent int, currentIndent int, style *St
 		return fmt.Sprintf("%s%t%s", style.Boolean, v, resetStyle)
 	case nil:
 		return fmt.Sprintf("%snull%s", style.Null, resetStyle)
-	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64:
-		return fmt.Sprintf("%s%v%s", style.Numeric, v, resetStyle)
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+		return fmt.Sprintf("%s%d%s", style.Numeric, v, resetStyle)
+	case float64:
+		return fmt.Sprintf("%s%s%s", style.Numeric, strconv.FormatFloat(v, 'f', -1, 64), resetStyle)
+	case float32:
+		return fmt.Sprintf("%s%s%s", style.Numeric, strconv.FormatFloat(float64(v), 'f', -1, 64), resetStyle)
 	case time.Time:
 		return fmt.Sprintf("%s\"%s\"%s", style.String, v.Format(time.RFC3339), resetStyle)
 	case map[string]interface{}:
