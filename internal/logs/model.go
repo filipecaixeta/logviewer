@@ -76,7 +76,9 @@ func New(c *common.Common) *Model {
 func (m *Model) Init() tea.Cmd {
 	ctx := context.Background()
 	m.ctx, m.cancel = context.WithCancel(ctx)
-	return m.common.Src.Logs(ctx, m.common.StateChan, m.lChan)
+	viewlist.CurrentView = nil
+	viewlist.DisplayedView = config.View{}
+	return tea.Batch(m.common.Src.Logs(ctx, m.common.StateChan, m.lChan), m.viewList.Init())
 }
 
 func (m *Model) Close() {
@@ -87,18 +89,24 @@ func (m *Model) updateFilterTextModel(msg tea.KeyMsg) tea.Cmd {
 	switch {
 	case key.Matches(msg, textModelKeys.Save):
 		m.textModel.Blur()
-		if err := m.pipeline.SetFilter(m.textModel.Value()); err != nil {
+		viewlist.DisplayedView.Filter = m.textModel.Value()
+		if err := m.pipeline.SetFilter(viewlist.DisplayedView.Filter); err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		// TODO
+		// call function to save the config file
+		viewlist.CurrentView.Filter = viewlist.DisplayedView.Filter
+
 		m.logEntries.RunPipeline(m.pipeline.RunFilterChanged)
 		return nil
 	case key.Matches(msg, textModelKeys.Run):
-		if err := m.pipeline.SetFilter(m.textModel.Value()); err != nil {
+		viewlist.DisplayedView.Filter = m.textModel.Value()
+		if err := m.pipeline.SetFilter(viewlist.DisplayedView.Filter); err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
 		m.logEntries.RunPipeline(m.pipeline.RunFilterChanged)
 		return nil
-	case key.Matches(msg, textModelKeys.Cancel):
+	case key.Matches(msg, textModelKeys.Back):
 		m.textModel.Blur()
 	default:
 		var cmd tea.Cmd
@@ -110,22 +118,35 @@ func (m *Model) updateFilterTextModel(msg tea.KeyMsg) tea.Cmd {
 
 func (m *Model) updateReturnedFieldsTextModel(msg tea.KeyMsg) tea.Cmd {
 	returnedFields := strings.Split(m.textModel.Value(), ",")
+	for i := 0; i < len(returnedFields); i++ {
+		returnedFields[i] = strings.TrimSpace(returnedFields[i])
+		if returnedFields[i] == "" {
+			returnedFields = append(returnedFields[:i], returnedFields[i+1:]...)
+			i--
+		}
+	}
 
 	switch {
 	case key.Matches(msg, textModelKeys.Save):
 		m.textModel.Blur()
+		viewlist.DisplayedView.ReturnedFields = returnedFields
 		if err := m.pipeline.SetReturnedFields(returnedFields); err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		// TODO
+		// call function to save the config file
+		viewlist.CurrentView.ReturnedFields = returnedFields
+
 		m.logEntries.RunPipeline(m.pipeline.RunReturnedFieldsChanged)
 		return nil
 	case key.Matches(msg, textModelKeys.Run):
+		viewlist.DisplayedView.ReturnedFields = returnedFields
 		if err := m.pipeline.SetReturnedFields(returnedFields); err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
 		m.logEntries.RunPipeline(m.pipeline.RunReturnedFieldsChanged)
 		return nil
-	case key.Matches(msg, textModelKeys.Cancel):
+	case key.Matches(msg, textModelKeys.Back):
 		m.textModel.Blur()
 	default:
 		var cmd tea.Cmd
@@ -165,12 +186,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, keys.Filter):
 			m.textModel.Focus()
 			m.textareaTitle = "Filter"
-			m.textModel.SetValue(m.pipeline.Cfg.Filter)
+			m.textModel.SetValue(viewlist.DisplayedView.Filter)
 			return m, textarea.Blink
 		case key.Matches(msg, keys.ReturnedFields):
 			m.textModel.Focus()
 			m.textareaTitle = "Returned Fields"
-			m.textModel.SetValue(strings.Join(m.pipeline.Cfg.ReturnedFields, ", "))
+			m.textModel.SetValue(strings.Join(viewlist.DisplayedView.ReturnedFields, ", "))
 			return m, textarea.Blink
 		case key.Matches(msg, keys.View):
 			m.viewList.Visible = true
@@ -195,14 +216,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case state.State:
 		switch msg {
 		case state.StateLoadView:
-			view := m.viewList.SelectedView()
-			if view != nil {
-				if err := m.pipeline.SetView(view); err != nil {
-					fmt.Printf("err: %v\n", err)
-				}
-				m.logEntries.RunPipeline(m.pipeline.RunViewChanged)
-				m.common.State = state.StateLogs
+			view := viewlist.CurrentView
+			viewlist.DisplayedView = *view
+			if err := m.pipeline.SetView(view); err != nil {
+				fmt.Printf("err: %v\n", err)
 			}
+			m.logEntries.RunPipeline(m.pipeline.RunViewChanged)
+			m.common.State = state.StateLogs
 			return m, m.common.HandleStateChange()
 		}
 	case LogMsg:
@@ -222,14 +242,11 @@ func (m *Model) copyToClipboard(y int) {
 	}
 	if err == nil && l != nil {
 		lCopy := *l
-		returnedFields := []string{}
-		if view := m.viewList.SelectedView(); view != nil {
-			returnedFields = view.ReturnedFields
-		}
 		t := pipeline.LogFormat{
-			ReturnedFields: returnedFields,
+			ReturnedFields: viewlist.DisplayedView.ReturnedFields,
 		}
 		_ = t.RunReturnedFieldsAndFormat(&lCopy)
+		// fmt.Printf("lCopy: %+v\n", lCopy)
 		clipboard.Write(clipboard.FmtText, []byte(lCopy.Formatted))
 	}
 }

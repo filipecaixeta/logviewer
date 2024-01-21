@@ -65,11 +65,16 @@ func commonRunE(commandName string) func(cmd *cobra.Command, args []string) erro
 			os.Exit(1)
 		}
 
-		// logFile, _ := os.OpenFile("debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-		// oldStdout := os.Stdout
-		// os.Stdout = logFile
-		// defer func() { os.Stdout = oldStdout }()
-		// defer logFile.Close()
+		var logFile *os.File
+		if os.Getenv("DEBUG") == "true" {
+			logFile, _ = os.OpenFile("debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		} else {
+			logFile, _ = os.OpenFile(os.DevNull, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		}
+		oldStdout := os.Stdout
+		os.Stdout = logFile
+		defer func() { os.Stdout = oldStdout }()
+		defer logFile.Close()
 		defer func() {
 			if r := recover(); r != nil {
 				log.Println("Recovered from panic:", r)
@@ -88,8 +93,8 @@ func commonRunE(commandName string) func(cmd *cobra.Command, args []string) erro
 
 		p = tea.NewProgram(m, tea.WithAltScreen(), tea.WithMouseAllMotion())
 		if _, err := p.Run(); err != nil {
-			// os.Stdout = oldStdout
-			// logFile.Close()
+			os.Stdout = oldStdout
+			logFile.Close()
 			log.Fatalf("Error starting TUI: %s\n", err)
 		}
 

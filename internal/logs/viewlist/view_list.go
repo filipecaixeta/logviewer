@@ -16,6 +16,14 @@ import (
 
 var footerBorder = lipgloss.NewStyle().Border(lipgloss.NormalBorder(), true, false, false, false)
 
+var (
+	// CurrentView is the view that is persisted in the config file
+	CurrentView *config.View
+	// DisplayedView is the view that is currently displayed and could be
+	// a modified version of the currentView
+	DisplayedView config.View
+)
+
 type Model struct {
 	common   *common.Common
 	Visible  bool
@@ -44,6 +52,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// case key.Matches(msg, keys.New):
 			// 	m.common.SetState(state.StateCreateView)
 		case key.Matches(msg, Keys.Select):
+			if len(m.viewList.Items()) != 0 {
+				CurrentView = m.viewList.SelectedItem().(*config.View)
+				DisplayedView = *CurrentView
+			}
 			m.common.SetState(state.StateLoadView)
 			m.Visible = false
 		}
@@ -56,13 +68,6 @@ func (m *Model) View() string {
 		return ""
 	}
 	return footerBorder.Width(m.common.Width).Render(m.viewList.View()) + "\n"
-}
-
-func (m *Model) SelectedView() *config.View {
-	if len(m.viewList.Items()) == 0 {
-		return nil
-	}
-	return m.viewList.SelectedItem().(*config.View)
 }
 
 func toListItem(items []config.View) []list.Item {
