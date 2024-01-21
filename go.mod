@@ -6,12 +6,12 @@ toolchain go1.21.1
 
 require (
 	github.com/BurntSushi/toml v1.3.2
-	github.com/alecthomas/chroma v0.10.0
 	github.com/charmbracelet/bubbles v0.17.1
 	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/charmbracelet/lipgloss v0.9.1
 	github.com/docker/docker v24.0.7+incompatible
 	github.com/expr-lang/expr v1.15.7
+	github.com/json-iterator/go v1.1.12
 	github.com/mattn/go-runewidth v0.0.15
 	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/pelletier/go-toml/v2 v2.1.0
@@ -31,7 +31,6 @@ require (
 	github.com/containerd/console v1.0.4-0.20230313162750-1ae8d489ac81 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/distribution/reference v0.5.0 // indirect
-	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
@@ -50,7 +49,6 @@ require (
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

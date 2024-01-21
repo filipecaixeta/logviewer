@@ -46,14 +46,14 @@ func SetColor(color string) {
 		TitleBorderStyle = lipgloss.NewStyle().Border(lipgloss.NormalBorder(), true, false, false, false).Bold(true).Foreground(lipgloss.Color("#6b1cff")).MarginBottom(1)
 		TitleStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#6b1cff")).MarginBottom(1)
 		SpinnerStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#6b1cff"))
-		Theme = "igor"
+		Theme = color
 	} else {
 		ListActiveStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#EEEEEE")).Bold(true)
 		ListStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#666666"))
 		TitleBorderStyle = lipgloss.NewStyle().Border(lipgloss.NormalBorder(), true, false, false, false).Bold(true).Foreground(lipgloss.Color("#ae81ff")).MarginBottom(1)
 		TitleStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#ae81ff")).MarginBottom(1)
 		SpinnerStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ae81ff"))
-		Theme = "monokai"
+		Theme = color
 	}
 }
 

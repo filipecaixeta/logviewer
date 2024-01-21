@@ -157,6 +157,9 @@ func (s *Source) Logs(ctx context.Context, stateChan chan state.State, logChan c
 		defer podLogs.Close()
 
 		scanner := bufio.NewScanner(podLogs)
+		const maxCapacity = 1024 * 1024 // 1MB, default was 64kb
+		buf := make([]byte, 0, maxCapacity)
+		scanner.Buffer(buf, maxCapacity)
 		stateChan <- state.StateLogs
 
 		if scanner.Scan() {
