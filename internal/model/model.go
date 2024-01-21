@@ -143,15 +143,15 @@ func (m *Model) View() string {
 		if r < 0 {
 			r = 0
 		}
-		loadMsg := " Loading k8s data ..."
+		loadMsg := " Loading ..."
 		if m.common.State == state.StateLogsLoading {
 			loadMsg = " Loading logs ..."
 		}
-		return m.loadingSpinner.View() + loadMsg + strings.Repeat("\n", r) + h
+		return m.loadingSpinner.View() + loadMsg + strings.Repeat("\n", r) + h + "\n"
 	case state.StateBrose:
-		return m.browse.View()
+		return m.browse.View() + "\n"
 	case state.StateLogs:
-		return m.logs.View()
+		return m.logs.View() + "\n"
 	}
 	return ""
 }

@@ -9,7 +9,7 @@ Set Padding 10
 Hide
 Type "./logviewer test --config config.template.toml"
 Enter
-Sleep 200ms
+Sleep 500ms
 Show
 
 # home screen

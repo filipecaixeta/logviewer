@@ -65,14 +65,14 @@ func (k keyMap) ShortHelp() []key.Binding {
 func (k keyMap) FullHelp() [][]key.Binding { return nil }
 
 type textModelKeyMap struct {
-	Cancel key.Binding
-	Quit   key.Binding
-	Save   key.Binding
-	Run    key.Binding
+	Back key.Binding
+	Quit key.Binding
+	Save key.Binding
+	Run  key.Binding
 }
 
 var textModelKeys = textModelKeyMap{
-	Cancel: key.NewBinding(
+	Back: key.NewBinding(
 		key.WithKeys("esc"),
 		key.WithHelp("esc", "back"),
 	),
@@ -91,7 +91,7 @@ var textModelKeys = textModelKeyMap{
 }
 
 func (k textModelKeyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.Run, k.Cancel, k.Quit}
+	return []key.Binding{k.Run, k.Back, k.Quit}
 }
 
 func (k textModelKeyMap) FullHelp() [][]key.Binding { return nil }

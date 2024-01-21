@@ -3,3 +3,4 @@ venv
 vendor
 config.toml
 .DS_Store
+*.log

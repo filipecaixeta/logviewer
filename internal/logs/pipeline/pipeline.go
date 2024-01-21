@@ -390,7 +390,6 @@ func (lp *LogPipeline) SetFilter(filter string) error {
 		lp.lf.Filter = nil
 		return nil
 	}
-	lp.Cfg.Filter = filter
 	return lp.lf.Compile()
 }
 
@@ -411,7 +410,6 @@ func (lp *LogPipeline) SetReturnedFields(fields []string) error {
 		}
 	}
 	lp.lft.ReturnedFields = fields
-	lp.Cfg.ReturnedFields = fields
 	return nil
 }
 
@@ -425,7 +423,6 @@ func (lp *LogPipeline) RunReturnedFieldsChanged(l *LogEntry) error {
 func (lp *LogPipeline) SetTransforms(transforms []config.Transform) error {
 	lp.Reset()
 	lp.lt.Transforms = compileLogTransforms(transforms)
-	lp.Cfg.Transforms = transforms
 	return nil
 }
 
