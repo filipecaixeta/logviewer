@@ -20,7 +20,7 @@ type Style struct {
 const resetStyle = "\033[0m"
 
 var DarkStyle = Style{
-	Null:    "\033[38;5;94m",
+	Null:    "\033[38;5;47m",
 	Boolean: "\033[38;5;45m",
 	Numeric: "\033[38;5;141m",
 	String:  "\033[38;5;228m",
@@ -29,7 +29,7 @@ var DarkStyle = Style{
 }
 
 var LightStyle = Style{
-	Null:    "\033[38;5;118m",
+	Null:    "\033[38;5;19m",
 	Boolean: "\033[38;5;18m",
 	Numeric: "\033[38;5;55m",
 	String:  "\033[38;5;22m",
