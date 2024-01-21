@@ -1,7 +1,6 @@
 package pipeline
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -11,8 +10,8 @@ import (
 	jsoniter "github.com/json-iterator/go"
 
 	"github.com/filipecaixeta/logviewer/internal/config"
+	"github.com/filipecaixeta/logviewer/internal/logs/json_format"
 
-	"github.com/alecthomas/chroma/quick"
 	"github.com/expr-lang/expr"
 	"github.com/expr-lang/expr/vm"
 	"github.com/mattn/go-runewidth"
@@ -128,12 +127,14 @@ func (lt *LogFormat) RunReturnedFieldsAndFormat(l *LogEntry) error {
 		}
 	}
 
-	jsonLog, _ := jsonLib.MarshalIndent(j, "", " ")
 	if lt.Highlight {
-		var buff bytes.Buffer
-		_ = quick.Highlight(&buff, string(jsonLog), "json", "terminal256", config.Theme)
-		l.Formatted = buff.String()
+		style := &json_format.LightStyle
+		if config.Theme == "dark" {
+			style = &json_format.DarkStyle
+		}
+		l.Formatted = json_format.PrettyPrintJSON(j, 2, style)
 	} else {
+		jsonLog, _ := json.MarshalIndent(j, "", "  ")
 		l.Formatted = string(jsonLog)
 	}
 
