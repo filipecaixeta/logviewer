@@ -45,9 +45,7 @@ func commonRunE(commandName string) func(cmd *cobra.Command, args []string) erro
 		var p *tea.Program
 
 		// if any flag is set replace the config value
-		if cmd.Flags().Changed("color") {
-			Cfg.Color = color
-		}
+		Cfg.Color = "dark"
 		if cmd.Flags().Changed("namespaces") {
 			Cfg.Namespaces = namespaces
 		}
