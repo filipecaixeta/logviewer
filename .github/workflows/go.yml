@@ -48,6 +48,10 @@ jobs:
       - name: Create and Upload Release
         uses: softprops/action-gh-release@v1
         with:
-          files: artifacts/*
+          files: |
+            artifacts/logviewer-macos-latest-amd64
+            artifacts/logviewer-macos-latest-arm64
+            artifacts/logviewer-ubuntu-latest-amd64
+            artifacts/logviewer-ubuntu-latest-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
