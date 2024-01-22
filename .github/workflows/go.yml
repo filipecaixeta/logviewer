@@ -45,24 +45,21 @@ jobs:
         with:
           path: artifacts
 
-      - name: Flatten Artifacts Directory
+      - name: Organize Artifacts into 'bin' Directory
         run: |
-          for dir in artifacts/*; do
-            if [ -d "$dir" ]; then
-              mv "$dir"/* artifacts/
+          mkdir -p bin
+          for subdir in artifacts/*; do
+            if [ -d "$subdir" ]; then
+              mv "$subdir"/* bin/
             fi
           done
 
-      - name: List contents of the artifacts directory
-        run: ls -lR artifacts/
+      - name: List contents of the 'bin' directory
+        run: ls -l bin/
 
       - name: Create and Upload Release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            artifacts/logviewer-macos-latest-amd64
-            artifacts/logviewer-macos-latest-arm64
-            artifacts/logviewer-ubuntu-latest-amd64
-            artifacts/logviewer-ubuntu-latest-arm64
+          files: bin/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
