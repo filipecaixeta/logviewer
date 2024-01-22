@@ -41,8 +41,8 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: logviewer-$PLATFORM-${{ matrix.arch }}
-        path: logviewer-$PLATFORM-${{ matrix.arch }}
+        name: logviewer-${{ env.PLATFORM }}-${{ matrix.arch }}
+        path: logviewer-${{ env.PLATFORM }}-${{ matrix.arch }}
 
   release:
     needs: build
