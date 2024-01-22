@@ -45,6 +45,9 @@ jobs:
         with:
           path: artifacts
 
+      - name: List contents of the artifacts directory
+        run: ls -lR artifacts/
+
       - name: Create and Upload Release
         uses: softprops/action-gh-release@v1
         with:
