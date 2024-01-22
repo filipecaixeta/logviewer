@@ -47,7 +47,7 @@ LogViewer determines which configuration file to use following this order:
 
 1. A file specified by the `LOGVIEWER_CONFIG` environment variable.
 2. A `config.toml` file in the current working directory.
-3. A `config.toml` file in the user's home directory.
+3. A `~/.config/logviewer/config.toml` file in the user's home directory.
 
 You can also explicitly specify a configuration file using the `--config` flag:
 
