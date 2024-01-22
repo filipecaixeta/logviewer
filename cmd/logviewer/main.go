@@ -154,7 +154,7 @@ func newVersionCmd() *cobra.Command {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "config.toml", "config file path")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file path")
 	rootCmd.PersistentFlags().BoolVarP(&flagL, "light", "l", false, "Use the light mode")
 	rootCmd.PersistentFlags().BoolVarP(&flagD, "dark", "d", true, "Use the dark mode (default)")
 	if err := viper.BindPFlags(rootCmd.PersistentFlags()); err != nil {
@@ -175,24 +175,36 @@ func initConfig() {
 		cfgFile = findConfigFile()
 	}
 
+	Cfg.Filename = cfgFile
+
 	// try to open the file and read it
 	_, err := os.Stat(cfgFile)
 	if err != nil {
-		fmt.Println("Error opening config file:", err)
+		// create the file and dir
+		err := os.MkdirAll(cfgFile[:len(cfgFile)-len("/config.toml")], 0755)
+		if err != nil {
+			fmt.Println("Error creating config file:", err)
+			return
+		}
+		f, err := os.Create(cfgFile)
+		if err != nil {
+			fmt.Println("Error creating config file:", err)
+			return
+		}
+		f.Close()
 	}
 
 	// read into a string
 	b, err := os.ReadFile(cfgFile)
 	if err != nil {
 		fmt.Println("Error reading config file:", err)
+		return
 	}
 
 	// unmarshal toml into Cfg
 	if _, err := toml.Decode(string(b), &Cfg); err != nil {
 		fmt.Println("Error decoding config file:", err)
 	}
-
-	Cfg.Filename = cfgFile
 }
 
 // findConfigFile searches for a config file in the following order
@@ -219,7 +231,7 @@ func findConfigFile() string {
 	if err != nil {
 		return "config.toml"
 	}
-	return home + "/config.toml"
+	return home + "/.config/logviewer/config.toml"
 }
 
 func Execute() {
