@@ -32,6 +32,7 @@ jobs:
         elif [ "${{ matrix.os }}" == "macos-latest" ]; then
           PLATFORM='macos'
         fi
+        echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
         GOOS=${{ matrix.goos }} GOARCH=${{ matrix.arch }} go build -ldflags "-s -w -X main.Version=${GITHUB_REF/refs\/tags\//}" -o logviewer-$PLATFORM-${{ matrix.arch }} cmd/logviewer/main.go
       env:
         GOOS: ${{ matrix.goos }}
