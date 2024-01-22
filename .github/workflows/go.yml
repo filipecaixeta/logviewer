@@ -45,6 +45,14 @@ jobs:
         with:
           path: artifacts
 
+      - name: Flatten Artifacts Directory
+        run: |
+          for dir in artifacts/*; do
+            if [ -d "$dir" ]; then
+              mv "$dir"/* artifacts/
+            fi
+          done
+
       - name: List contents of the artifacts directory
         run: ls -lR artifacts/
 
