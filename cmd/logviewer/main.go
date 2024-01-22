@@ -14,15 +14,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-var Cfg config.Config
-var cfgFile string
-var color = "dark"
-var namespaces []string
-var context string
-
 var (
-	flagL bool
-	flagD bool
+	Version    = "dev"
+	Cfg        config.Config
+	cfgFile    string
+	namespaces []string
+	context    string
+	flagL      bool
+	flagD      bool
 )
 
 // rootCmd represents the root command for the LogViewer TUI tool.
@@ -143,6 +142,16 @@ func newDockerCmd() *cobra.Command {
 	}
 }
 
+func newVersionCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "version",
+		Short: "Print the version number of the application",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("Version:", Version)
+		},
+	}
+}
+
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "config.toml", "config file path")
@@ -156,6 +165,7 @@ func init() {
 	rootCmd.AddCommand(newStdinCmd())
 	rootCmd.AddCommand(newDockerCmd())
 	rootCmd.AddCommand(newTestCmd())
+	rootCmd.AddCommand(newVersionCmd())
 }
 
 // initConfig loads the config from the toml config file and unmarshals
