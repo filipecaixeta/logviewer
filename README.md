@@ -10,7 +10,17 @@ LogViewer is a Terminal User Interface (TUI) application designed to facilitate 
 
 ## Installation
 
-To install LogViewer, ensure you have Go installed on your system and then run the following command:
+### Method 1: Script-based Installation
+
+For a quick and easy installation, you can use the following script. This script detects your OS, downloads the correct LogViewer binary, and places it in your system's binary path:
+
+```bash
+curl -s https://raw.githubusercontent.com/filipecaixeta/logviewer/master/install.sh | bash
+```
+
+### Method 2: Go Install
+
+To install LogViewer using Go, ensure you have Go installed on your system and then run the following command:
 
 ```bash
 go install github.com/filipecaixeta/logviewer/cmd/logviewer@latest
