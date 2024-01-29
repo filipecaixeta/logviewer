@@ -2,7 +2,7 @@
 
 # Detect OS and Architecture
 OS="$(uname -s)"
-ARCH="$(uname -m)"
+ARCH="$(uname -m | sed s/x86_64/amd64/)"
 
 echo "Detected OS: $OS, Architecture: $ARCH"
 
